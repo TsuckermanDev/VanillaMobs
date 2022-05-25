@@ -27,10 +27,18 @@ public $dropExp = [1, 3];
     public function initEntity(){
         parent::initEntity();
 
+        if(mt_rand(1, 4) == 1){
+            $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY, true);
+            $this->setScale(0.5);
+        }
         $this->setMaxHealth(10);
         $this->setHealth(10);
     }
-  
+
+  public function isBaby() : bool{
+    return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
+  }
+
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();

@@ -33,9 +33,18 @@ public function __construct(Level $level, CompoundTag $nbt){
     public function initEntity(){
         parent::initEntity();
 
+        if(mt_rand(1, 4) == 1){
+                $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY, true);
+            $this->setScale(0.5);
+        }
         $this->setMaxHealth(8);
         $this->setHealth(8);
     }
+
+  public function isBaby() : bool{
+    return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
+  }
+
 public function isSheared() : bool{
   return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED);
  }
