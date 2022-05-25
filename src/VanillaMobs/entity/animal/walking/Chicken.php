@@ -51,7 +51,7 @@ public $dropExp = [1, 3];
 
 		parent::spawnTo($player);
 	}
-	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
 		if($this->dropEggTime === 0){
 			$this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
 		}

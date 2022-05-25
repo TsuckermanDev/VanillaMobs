@@ -8,27 +8,23 @@ use pocketmine\nbt\tag\{CompoundTag, ListTag, DoubleTag, FloatTag};
 
 abstract class BaseEntity extends Creature{
 
- public function setKnockBack($value, $entity){
-                $x = $this->x - $entity->x;
-                $z = $this->z - $entity->z;
-   		$f = sqrt($x * $x + $z * $z);
-		if($f <= 0){
-			return;
-		}
-                    $f = 1 / $f;
-                    $motion = new Vector3($this->motionX, $this->motionY, $this->motionZ);
-		    $motion->x /= 2;
-		    $motion->y /= 2;
-		    $motion->z /= 2;
-		    $motion->x += $x * $f * $value;
-		    $motion->y += $value;
-		    $motion->z += $z * $f * $value;
-
-			if($motion->y > $value){
-				$motion->y = $value;
-			}
+	public function setKnockBack($value, $entity) : void{
+		$x = $this->x - $entity->x;
+		$z = $this->z - $entity->z;
+		$f = sqrt($x * $x + $z * $z);
+		if($f > 0) {
+			$f = 1 / $f;
+			$motion = new Vector3($this->motionX, $this->motionY, $this->motionZ);
+			$motion->x /= 2;
+			$motion->y /= 2;
+			$motion->z /= 2;
+			$motion->x += $x * $f * $value;
+			$motion->y += $value;
+			$motion->z += $z * $f * $value;
+			if ($motion->y > $value) $motion->y = $value;
 			$this->setMotion($motion);
- }
+		}
+	}
 
 public function nbtShoot(){
             return new CompoundTag("", [

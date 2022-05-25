@@ -62,7 +62,7 @@ public $dropExp = [1, 3];
 		parent::spawnTo($player);
 	}
 
-     public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
+     public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
 		if($this->isClosed() or !$this->isAlive()){
 			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
@@ -71,7 +71,7 @@ public $dropExp = [1, 3];
 			return true;
 		}
 
-		$hasUpdate = parent::entityBaseTick(1, $EnchantL);
+		$hasUpdate = parent::entityBaseTick( 1,  $EnchantL);
 if($this->attackDelay > 5){
                 $ev = new EntityDamageByEntityEvent($this, $this->isnear, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 7);
             $this->isnear->attack($ev->getFinalDamage(), $ev);
@@ -87,7 +87,7 @@ if($this->knockback < 1){
 }
    /*getWeather()->getWeather()... WHAT?!*/
     $arraybl = array(8, 9, 10, 11);
-    if(in_array($this->isInsideOfWater() || ($this->getLevel()->getWeather()->getWeather() == 1 and $this->getLevel()->getBiomeId($this->x, $this->z) != 2 and !$this->hasHeadBlock())){
+    if($this->isInsideOfWater() || ($this->getLevel()->getWeather()->getWeather() == 1 and $this->getLevel()->getBiomeId($this->x, $this->z) != 2 and !$this->hasHeadBlock())){
    $ev = new EntityDamageByEntityEvent($this, $this, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 1);
             $this->attack($ev->getFinalDamage(), $ev);
     $x = $this->x + rand(-8, 8);

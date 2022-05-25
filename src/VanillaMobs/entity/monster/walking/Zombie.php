@@ -66,7 +66,7 @@ public $dropExp = [1, 3];
 		parent::spawnTo($player);
 	}
        
-     public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
+     public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
 		if($this->isClosed() or !$this->isAlive()){
 			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
