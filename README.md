@@ -1,19 +1,18 @@
-#VanillaMobs
-Плагин для реализации мобов на вашем сервере.
+# VanillaMobs
+### Плагин для реализации мобов на вашем сервере.
 
 В нашем ядре уже реализовано:
 -------------
 
---Animal:
--Chicken
--Sheep
--Cow
--Pig
+Мирные животные:
+- Курица
+- Овца
+- Корова
+- Свинья
 
---Monster:
--Zombie
--Skeleton
--Husk
--Enderman
+Монстеры:
+- Зомби
+- Скелет
+- Эндермен
 
 If you find a bug or vulnerability, immediately write to the issue.
