@@ -87,7 +87,7 @@ if($this->knockback < 1){
 }
    /*getWeather()->getWeather()... WHAT?!*/
     $arraybl = array(8, 9, 10, 11);
-    if(in_array($this->getLevel()->getBlockAt($this->x, $this->y, $this->z)->getId(), $arraybl) || $this->getLevel()->getWeather()->getWeather() == 1 and $this->getLevel()->getBiomeId($this->x, $this->z) != 2 and !$this->hasHeadBlock()){
+    if(in_array($this->isInsideOfWater() || ($this->getLevel()->getWeather()->getWeather() == 1 and $this->getLevel()->getBiomeId($this->x, $this->z) != 2 and !$this->hasHeadBlock())){
    $ev = new EntityDamageByEntityEvent($this, $this, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 1);
             $this->attack($ev->getFinalDamage(), $ev);
     $x = $this->x + rand(-8, 8);
