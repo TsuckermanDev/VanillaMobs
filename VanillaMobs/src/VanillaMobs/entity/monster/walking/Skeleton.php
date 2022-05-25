@@ -68,8 +68,7 @@ public $dropExp = [1, 3];
     $this->onSun();
 if($this->attackDelay > 60 and $this->isnear != null){
             $arrow = Entity::createEntity("Arrow", $this->level, $this->nbtShoot(), $this);
-            $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $arrow, 1.2);
-            $this->server->getPluginManager()->callEvent($ev);
+            $arrow->spawnToAll();
       $this->attackDelay = 0;
 
 

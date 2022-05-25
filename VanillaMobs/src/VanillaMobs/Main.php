@@ -14,6 +14,7 @@ use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 use pocketmine\scheduler\PluginTask;
 use VanillaMobs\entity\animal\walking\{Sheep, Cow, Chicken, Pig};
+use VanillaMobs\entity\projectile\{LargeFireball, LittleFireball};
 use VanillaMobs\entity\monster\walking\{Zombie, Skeleton, Husk, Enderman};
 
 class Main extends PluginBase implements Listener{
@@ -29,7 +30,9 @@ class Main extends PluginBase implements Listener{
         Zombie::class,
         Skeleton::class,
         Husk::class,
-        Enderman::class
+        Enderman::class,
+        LargeFireball::class,
+        LittleFireball::class
         );
 
     
