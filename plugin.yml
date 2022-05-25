@@ -1,5 +1,6 @@
 name: VanillaMobs
 version: 1.0
-author: FrizDev
-main: VanillaMobs\Main
+author: FrizDev && David Ratnikov
+website: https://github.com/FrizDev057/VanillaMobs/
+main: VanillaMobs\Loader
 api: 3.0.0
