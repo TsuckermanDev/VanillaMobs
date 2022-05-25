@@ -242,6 +242,11 @@ $this->pitch = $yy == 0 ? 0 : rad2deg(-atan2($yy, sqrt($xx ** 2 + $zz ** 2)));
   }
 
 	public function lookAtEnderman($entity) : bool{
+		if($entity instanceof Player){
+			if($entity->getInventory()->getHelmet()->getId() == 86){
+				return false;
+			}
+		}
 		$horizontal = sqrt(($this->x - $entity->x) ** 2 + ($this->z - $entity->z) ** 2);
 		$vertical = ($this->y + 1) - $entity->y;
 		$pitch = -atan2($vertical, $horizontal) / M_PI * 180; //negative is up, positive is down
