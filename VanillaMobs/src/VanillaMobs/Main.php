@@ -13,8 +13,8 @@ use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 use pocketmine\scheduler\PluginTask;
-use VanillaMobs\entity\animal\{Sheep, Cow, Chicken, Pig};
-use VanillaMobs\entity\monster\{Zombie, Skeleton, Husk, Enderman};
+use VanillaMobs\entity\animal\walking\{Sheep, Cow, Chicken, Pig};
+use VanillaMobs\entity\monster\walking\{Zombie, Skeleton, Husk, Enderman};
 
 class Main extends PluginBase implements Listener{
 

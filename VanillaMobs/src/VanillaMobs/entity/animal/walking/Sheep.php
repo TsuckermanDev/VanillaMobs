@@ -1,6 +1,6 @@
 <?php
 
-namespace VanillaMobs\entity\animal;
+namespace VanillaMobs\entity\animal\walking;
 
 use pocketmine\Player;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
@@ -13,6 +13,7 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\block\Block;
 use pocketmine\item\Item;
 use pocketmine\block\Wool;
+use VanillaMobs\entity\animal\WalkingAnimal;
 
 class Sheep extends WalkingAnimal{
   const NETWORK_ID = 13;

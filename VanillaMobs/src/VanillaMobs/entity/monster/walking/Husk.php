@@ -1,32 +1,31 @@
 <?php
 
-namespace VanillaMobs\entity\monster;
+namespace VanillaMobs\entity\monster\walking;
 
 use pocketmine\Player;
 use pocketmine\network\mcpe\protocol\{AddEntityPacket, EntityEventPacket, MobEquipmentPacket};
-use pocketmine\entity\Entity;
-use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent, EntityShootBowEvent};
-use pocketmine\nbt\tag\{CompoundTag, ListTag, DoubleTag, FloatTag};
-use pocketmine\network\Network;
+use pocketmine\entity\{Entity, Effect};
+use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+
 use pocketmine\math\{Vector3, AxisAlignedBB};
 use pocketmine\block\Block;
 use pocketmine\level\Level;
-use pocketmine\item\Item;
+use pocketmine\item\{Bow, Item};
+use VanillaMobs\entity\monster\WalkingMonster;
 
-
-class Zombie extends WalkingMonster{
-  const NETWORK_ID = 32;
+class Husk extends WalkingMonster{
+  const NETWORK_ID = 47;
 
   
 
     public $width = 1;
-    public $height = 2;
+    public $height = 1;
 public $dropExp = [1, 3];
   protected $attackDelay = 0;
 
 
   public function getName(){
-    return "Зомби";
+    return "Отброс";
   }
     public function initEntity(){
         parent::initEntity();
@@ -68,17 +67,16 @@ public $dropExp = [1, 3];
 
 		$hasUpdate = parent::entityBaseTick(1, $EnchantL);
 if($this->attackDelay > 10){
-
                 $ev = new EntityDamageByEntityEvent($this, $this->isnear, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 3);
             $this->isnear->attack($ev->getFinalDamage(), $ev);
+            $this->isnear->addEffect(Effect::getEffect(Effect::HUNGER)->setDuration(30 * 20));
      $this->attackDelay = 0;
 }
 		return $hasUpdate;
 	}
   public function processMove(){
-parent::processMove();
-    $this->onSun();
-
+   
+    parent::processMove();
     $isTarget = false;
     $entities2 = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 1, $this->y - 1, $this->z - 1, $this->x + 1, $this->y + 1, $this->z + 1));
     $entities = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 8, $this->y - 8, $this->z - 8, $this->x + 8, $this->y + 8, $this->z + 8));
@@ -94,7 +92,7 @@ parent::processMove();
      foreach($entities2 as $entity2){
       if($entity2 instanceof Player){
        if($entity2->isSurvival()){
-       $this->attackDelay += 1;
+       $this->attackDelay++;
        $this->isnear = $entity2;
        $isTarget = true;
         }
@@ -106,7 +104,7 @@ parent::processMove();
         $this->isnear = null;
       }
     }
-    $this->defaultMove();
+   $this->defaultMove();
   }
 
   public function getDrops(){

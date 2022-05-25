@@ -1,6 +1,6 @@
 <?php
 
-namespace VanillaMobs\entity\monster;
+namespace VanillaMobs\entity\monster\walking;
 
 use pocketmine\Player;
 use pocketmine\network\mcpe\protocol\{AddEntityPacket, EntityEventPacket, MobEquipmentPacket};
@@ -12,6 +12,7 @@ use pocketmine\math\{Vector3, AxisAlignedBB};
 use pocketmine\block\Block;
 use pocketmine\level\Level;
 use pocketmine\item\{Bow, Item};
+use VanillaMobs\entity\monster\WalkingMonster;
 
 class Enderman extends WalkingMonster{
   const NETWORK_ID = 38;
