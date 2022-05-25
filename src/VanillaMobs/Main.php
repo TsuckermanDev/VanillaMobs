@@ -10,13 +10,13 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\event\server\DataPacketReceiveEvent;
-
 use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 use pocketmine\scheduler\PluginTask;
+use VanillaMobs\entity\projectile\{LargeFireball, LittleFireball};
 use VanillaMobs\entity\animal\walking\{Sheep, Cow, Chicken, Pig};
 use VanillaMobs\entity\monster\walking\{Zombie, Skeleton, Husk, Enderman};
 
@@ -33,7 +33,9 @@ class Main extends PluginBase implements Listener{
         Zombie::class,
         Skeleton::class,
         Husk::class,
-        Enderman::class
+        Enderman::class,
+        LargeFireball::class,
+        LittleFireball::class
         );
 
     
