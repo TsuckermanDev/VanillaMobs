@@ -16,49 +16,62 @@ use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 use pocketmine\scheduler\PluginTask;
-use VanillaMobs\entity\projectile\{LargeFireball, LittleFireball};
-use VanillaMobs\entity\animal\walking\{Sheep, Cow, Chicken, Pig};
-use VanillaMobs\entity\monster\walking\{Zombie, Skeleton, Husk, Enderman};
+use VanillaMobs\entity\projectile\ {
+    LargeFireball,
+    LittleFireball
+};
+use VanillaMobs\entity\animal\walking\ {
+    Sheep,
+    Cow,
+    Chicken,
+    Pig
+};
+use VanillaMobs\entity\monster\walking\ {
+    Zombie,
+    Skeleton,
+    Husk,
+    Enderman
+};
 
-class Main extends PluginBase implements Listener{
+class Main extends PluginBase implements Listener {
 
-  private static array $classes = array();
+    private static $classes = array();
 
-  public function onLoad() : void{
-   $classes = array(
-        Pig::class,
-        Sheep::class,
-        Cow::class,
-        Chicken::class,
-        Zombie::class,
-        Skeleton::class,
-        Husk::class,
-        Enderman::class,
-        LargeFireball::class,
-        LittleFireball::class
+    public function onLoad() : void {
+        $classes = array(
+            Pig::class,
+            Sheep::class,
+            Cow::class,
+            Chicken::class,
+            Zombie::class,
+            Skeleton::class,
+            Husk::class,
+            Enderman::class,
+            LargeFireball::class,
+            LittleFireball::class
         );
 
-    
-   foreach($classes as $class) {
-    Entity::registerEntity($class);
+
+        foreach ($classes as $class) {
+            Entity::registerEntity($class);
+        }
+        $item = Item::get(Item::SPAWN_EGG, $class::NETWORK_ID);
+        if (!Item::isCreativeItem($item)) {
+            Item::addCreativeItem($item);
+        }
     }
-            $item = Item::get(Item::SPAWN_EGG, $class::NETWORK_ID);
-            if(!Item::isCreativeItem($item)){
-                Item::addCreativeItem($item);
-            }
-  }
     public function shearSheep(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
 
-        if($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
-            if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-                if($player->getItemInHand()->getId() != 359){
+        if ($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
+            if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
+                if ($player->getItemInHand()->getId() != 359) {
                     return false;
                 }
-                foreach($player->level->getEntities() as $entity) {
-                    if($entity instanceof Sheep && $entity->distance($player) <= 4) {
-                        if($entity->isSheared() || $entity->isBaby()) {
+                foreach ($player->level->getEntities() as $entity) {
+                    if ($entity instanceof Sheep && $entity->distance($player) <= 4) {
+                        if ($entity->isSheared() || $entity->isBaby()) {
                             return false;
                         } else {
                             $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, $entity->getColor(), mt_rand(1, 3)));
@@ -72,9 +85,9 @@ class Main extends PluginBase implements Listener{
         }
         return false;
     }
-  public function onEnable() : void{
-    $this->getServer()->getPluginManager()->registerEvents($this, $this);
-  }
+    public function onEnable() : void {
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+    }
 
 
 

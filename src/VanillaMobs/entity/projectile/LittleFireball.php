@@ -9,6 +9,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\level\Explosion;
+use pocketmine\entity\Projectile;
 
 class LittleFireball extends Projectile{
 	const NETWORK_ID = 94;

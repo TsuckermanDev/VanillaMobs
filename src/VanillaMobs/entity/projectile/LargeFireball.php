@@ -9,6 +9,7 @@ use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\level\Explosion;
 use pocketmine\event\entity\ExplosionPrimeEvent;
+use pocketmine\entity\Projectile;
 
 class LargeFireball extends Projectile{
 	const NETWORK_ID = 85;
