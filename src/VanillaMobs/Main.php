@@ -60,31 +60,25 @@ class Main extends PluginBase implements Listener {
             Item::addCreativeItem($item);
         }
     }
+    
     public function shearSheep(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
 
-        if ($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
+        if ($packet instanceof InteractPacket) {
             if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-                if ($player->getItemInHand()->getId() != 359) {
-                    return false;
-                }
-                foreach ($player->level->getEntities() as $entity) {
-                    if ($entity instanceof Sheep && $entity->distance($player) <= 4) {
-                        if ($entity->isSheared() || $entity->isBaby()) {
-                            return false;
-                        } else {
-                            $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, $entity->getColor(), mt_rand(1, 3)));
-                            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
-                            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
-                            return true;
-                        }
-                    }
+                if ($player->getItemInHand()->getId() != 359) return false;
+                $entity = $player->level->getEntity($packet->target);
+                if ($entity instanceof Sheep) {
+                    if ($entity->isSheared() || $entity->isBaby()) return false;
+                    $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, $entity->getColor(), mt_rand(1, 3)));
+                    $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
+                    $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
                 }
             }
         }
-        return false;
     }
+
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
