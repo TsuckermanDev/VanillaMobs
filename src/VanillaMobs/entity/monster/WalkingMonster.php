@@ -10,7 +10,7 @@ use pocketmine\math\Vector3;
 abstract class WalkingMonster extends WalkingEntity{
       public function onSun(){
          		$time = $this->getLevel() !== null ? $this->getLevel()->getTime() % Level::TIME_FULL : Level::TIME_NIGHT;
-		if((!$this->isInsideOfWater()) && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE) && (!$this->hasHeadBlock())){
+		if($this->getLevel()->getBiomeId($this->x, $this->z) === 2 || ($this->getLevel()->getWeather()->getWeather() !== 1) && (!$this->isInsideOfWater()) && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE) && (!$this->hasHeadBlock())){
 			$this->setOnFire(1);
 		}
   }

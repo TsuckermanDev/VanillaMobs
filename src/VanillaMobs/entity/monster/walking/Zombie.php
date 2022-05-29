@@ -40,6 +40,9 @@ public $dropExp = [1, 3];
         $this->setHealth(24);
     }
 
+public function getSpeed(){
+return $this->isBaby() ? 0.3 : 0.1;
+}
   public function isBaby() : bool{
     return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
  }
@@ -78,8 +81,8 @@ public $dropExp = [1, 3];
 		$hasUpdate = parent::entityBaseTick(1, $EnchantL);
 if($this->attackDelay > 10){
 
-                $ev = new EntityDamageByEntityEvent($this, $this->isnear, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 3);
-            $this->isnear->attack($ev->getFinalDamage(), $ev);
+                $ev = new EntityDamageByEntityEvent($this, $this->nearby, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 3);
+            $this->nearby->attack($ev->getFinalDamage(), $ev);
      $this->attackDelay = 0;
 }
 		return $hasUpdate;
@@ -94,9 +97,11 @@ parent::processMove();
     foreach($entities as $entity){
       if($entity instanceof Player){
        if($entity->isSurvival()){
-       $this->target = $entity;
+       $this->setRandomPosition(null);
+       $this->setNearPlayer(null);
+       $this->setTarget($entity);
        $isTarget = true;
-       $this->isnear = null;
+
         }
       }
     }
@@ -104,15 +109,17 @@ parent::processMove();
       if($entity2 instanceof Player){
        if($entity2->isSurvival()){
        $this->attackDelay += 1;
-       $this->isnear = $entity2;
+       $this->setRandomPosition(null);
+       $this->setTarget(null);
+       $this->setNearPlayer($entity2);
        $isTarget = true;
         }
       }
     }
     if($isTarget === false){
-      if($this->target instanceof Player){
-        $this->target = null;
-        $this->isnear = null;
+      if($this->target instanceof Player || $this->nearby instanceof Player){
+        $this->setTarget(null);
+        $this->setNearPlayer(null);
       }
     }
     $this->defaultMove();

@@ -39,7 +39,9 @@ public $dropExp = [1, 3];
         $this->setMaxHealth(40);
         $this->setHealth(40);
     }
-  
+  public function getSpeed(){
+  return $this->isangry ? 0.2 : 0.1;
+  }
 	public function spawnTo(Player $player){
  
     
@@ -73,27 +75,23 @@ public $dropExp = [1, 3];
 
 		$hasUpdate = parent::entityBaseTick( 1,  $EnchantL);
 if($this->attackDelay > 5){
-                $ev = new EntityDamageByEntityEvent($this, $this->isnear, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 7);
-            $this->isnear->attack($ev->getFinalDamage(), $ev);
+                $ev = new EntityDamageByEntityEvent($this, $this->nearby, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 7);
+            $this->nearby->attack($ev->getFinalDamage(), $ev);
      $this->attackDelay = 0;
 }
 		return $hasUpdate;
 	}
   public function processMove(){
   parent::processMove();
-if($this->knockback < 1){
-   $this->knockback = 0;
-   $this->damager = null;
-}
-   /*getWeather()->getWeather()... WHAT?!*/
     $arraybl = array(8, 9, 10, 11);
-    if($this->isInsideOfWater() || ($this->getLevel()->getWeather()->getWeather() == 1 and $this->getLevel()->getBiomeId($this->x, $this->z) != 2 and !$this->hasHeadBlock())){
+    if($this->insideOfWater() || ($this->getLevel()->getWeather()->getWeather() == 1 and $this->getLevel()->getBiomeId($this->x, $this->z) != 2 and !$this->hasHeadBlock())){
    $ev = new EntityDamageByEntityEvent($this, $this, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 1);
             $this->attack($ev->getFinalDamage(), $ev);
     $x = $this->x + rand(-8, 8);
     $z = $this->z + rand(-8, 8);
     $y = $this->level->getHighestBlockAt($x, $z);
     $this->teleport(new Vector3($x, $y + 1.5, $z), $this->yaw, $this->pitch);
+    return;
 }
     $this->randomtp++;
     $this->pickblock++;
@@ -131,51 +129,9 @@ $this->setDataProperty(self::DATA_ENDERMAN_HELD_ITEM_DAMAGE, self::DATA_TYPE_SHO
     $y = $this->level->getHighestBlockAt($x, $z);
     $this->teleport(new Vector3($x, $y + 1.5, $z), $this->yaw, $this->pitch);
     $this->randomtp = 0;
-}elseif($this->collide > 1){
-   $this->setKnockBack(0.2, $this->collider);
-   $this->collide--;
-}elseif($this->knockback > 1 and $this->damager instanceof Vector3){
-     
-     $this->isnear = null;
-     $this->target = null;
-     $this->setKnockBack(0.4, $this->damager);
-     $this->knockback--;
-    }elseif($this->isnear instanceof Vector3){
-             
-         
-$angle = atan2($this->isnear->z - $this->z, $this->isnear->x - $this->x);
-      $this->yaw = (($angle * 180) / M_PI) - 90;
-      $xx = $this->isnear->x - $this->x;
-      $yy = $this->isnear->y - $this->y;
-      $zz = $this->isnear->y - $this->y;
-$this->pitch = $yy == 0 ? 0 : rad2deg(-atan2($yy, sqrt($xx ** 2 + $zz ** 2)));
-}elseif($this->target instanceof Vector3){
-     if($this->isangry == true){
-     $this->moveToTarget($this->target, 0.15);
-     }else{
-    $this->moveToTarget($this->target, 0.1);
-     }
-    }else{
-      $this->motionX = 0;
-      $this->motionZ = 0;
-      $rand = mt_rand(1, 150);
-      if($rand === 1){
-        $this->target = new Vector3($this->x + rand(-8, 8), $this->y, $this->z + rand(-8, 8));
-      }elseif($rand > 1 and $rand < 5){
-        $this->yaw = max(-180, min(180, ($this->yaw + rand(-90, 90))));
-        $this->getLevel()->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
-      }
-      if(!$this->getLevel()->getBlock($this->round())->isSolid()){
-        $this->motionY -= $this->gravity;
-      }else{
-        $this->motionY = 0.25;
-      }
-      $this->move($this->motionX, $this->motionY, $this->motionZ);
-    
-  }
+    }
 
     $isTarget = false;
-
     $entities2 = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 1, $this->y - 1, $this->z - 1, $this->x + 1, $this->y + 1, $this->z + 1));
     $entities = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 10, $this->y - 10, $this->z - 10, $this->x + 10, $this->y + 10, $this->z + 10));
     foreach($entities as $entity){
@@ -189,9 +145,9 @@ $this->pitch = $yy == 0 ? 0 : rad2deg(-atan2($yy, sqrt($xx ** 2 + $zz ** 2)));
       }
       if($this->damage == true || $this->lookAtEnderman($entity) || $this->isangry == true){
       $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ANGRY, true);
-       $this->target = $entity;
+       $this->setTarget($entity);
       $this->isangry = true;
-       $this->isnear = null;
+       $this->setNearPlayer(null);
           }
         }
       }
@@ -209,7 +165,7 @@ $this->pitch = $yy == 0 ? 0 : rad2deg(-atan2($yy, sqrt($xx ** 2 + $zz ** 2)));
       if($this->damage == true || $this->lookAtEnderman($entity2) || $this->isangry == true){
       $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ANGRY, true);
        $this->attackDelay++;
-       $this->isnear = $entity2;
+       $this->setNearPlayer($entity2);
         $this->isangry = true;
           }
         }
@@ -218,11 +174,11 @@ $this->pitch = $yy == 0 ? 0 : rad2deg(-atan2($yy, sqrt($xx ** 2 + $zz ** 2)));
     if($isTarget === false){
       if($this->target instanceof Player){
       $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ANGRY, false);
-        $this->target = null;
-        $this->isnear = null;
+        $this->setTarget(null);
+        $this->setNearPlayer(null);
       }
     }
-
+$this->defaultMove();
   }
   public function attack($damage, EntityDamageEvent $source){
     parent::attack($damage, $source);

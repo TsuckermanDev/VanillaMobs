@@ -25,14 +25,16 @@ public $dropExp = [1, 3];
     public function initEntity(){
         parent::initEntity();
 
-        if(mt_rand(1, 4) == 1){
+        if(mt_rand(1, 10) == 1){
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY, true);
             $this->setScale(0.5);
         }
         $this->setMaxHealth(10);
         $this->setHealth(10);
     }
-
+public function getSpeed(){
+return $this->isAgitation() ? $this->speed * 2 : $this->speed;
+}
   public function isBaby() : bool{
     return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
   }
@@ -62,7 +64,8 @@ public $dropExp = [1, 3];
     foreach($entities as $entity){
       if($entity instanceof Player){
         if($entity->getInventory()->getItemInHand()->getId() === 296){
-          $this->target = $entity;
+          $this->setRandomPosition(null);
+          $this->setTarget($entity);
           $isTarget = true;
           break;
         }
@@ -70,23 +73,17 @@ public $dropExp = [1, 3];
     }
     if($isTarget === false){
       if($this->target instanceof Player){
-        $this->target = null;
+        $this->setTarget(null);
       }
     }
   $this->defaultMove();
   }
 
   public function getDrops(){
-    if($this->isOnFire()){
-    return [
-      Item::get(Item::LEATHER, 0, mt_rand(0, 2)),
-      Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3))
-    ];
-    }else{
-    return [
-      Item::get(Item::LEATHER, 0, mt_rand(0, 2)),
-      Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3))
-    ];
-    }
+      if($this->isBaby()) return [];
+		return [
+			Item::get(Item::LEATHER, 0, mt_rand(0, 2)),
+     Item::get($this->isOnFire() ? Item::COOKED_BEEF : Item::RAW_BEEF, 0, mt_rand(1, 3))
+		];
   }
 }

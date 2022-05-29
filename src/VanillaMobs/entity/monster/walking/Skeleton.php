@@ -35,6 +35,9 @@ public $dropExp = [1, 3];
         $this->setHealth(20);
     }
   
+public function getSpeed(){
+return 0.1;
+}
 	public function spawnTo(Player $player){
  
     
@@ -66,7 +69,7 @@ public $dropExp = [1, 3];
   public function processMove(){
     parent::processMove();
     $this->onSun();
-if($this->attackDelay > 60 and $this->isnear != null){
+if($this->attackDelay > 60 and $this->nearby != null){
             $arrow = Entity::createEntity("Arrow", $this->level, $this->nbtShoot(), $this);
             $arrow->spawnToAll();
       $this->attackDelay = 0;
@@ -81,25 +84,27 @@ if($this->attackDelay > 60 and $this->isnear != null){
 
         if($this->distance($entity) < 10 and $this->distance($entity) > 5){
 $this->setDataProperty(self::DATA_TARGET_EID, self::DATA_TYPE_LONG, null);
-          $this->isnear = null;
-          $this->target = $entity;
+          $this->setNearPlayer(null);
+          $this->setRandomPosition(null);
+          $this->setTarget($entity);
           $isTarget = true;
           break;
         }
       if($this->distance($entity) < 5){
-             $this->attackDelay += 1;
-          $this->isnear = $entity;
+             $this->attackDelay++;
+          $this->setTarget(null);
+          $this->setNearPlayer($entity);
           $isTarget = true;
-$this->setDataProperty(self::DATA_TARGET_EID, self::DATA_TYPE_LONG, $this->isnear->getId());
+$this->setDataProperty(self::DATA_TARGET_EID, self::DATA_TYPE_LONG, $this->nearby->getId());
           break;
           }
         }
       }
     }
     if($isTarget === false){
-      if($this->target instanceof Player){
-        $this->target = null;
-        $this->isnear = null;
+      if($this->target instanceof Player || $this->nearby instanceof Player){
+        $this->setTarget(null);
+        $this->setNearPlayer(null);
       }
     }
   $this->defaultMove();

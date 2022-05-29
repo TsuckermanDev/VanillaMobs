@@ -8,6 +8,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\InteractPacket;
 use VanillaMobs\entity\projectile\ {
@@ -62,11 +63,22 @@ class Loader extends PluginBase implements Listener
 	 * @param DataPacketReceiveEvent $event
 	 * @return bool
 	 */
+public function join(PlayerJoinEvent $event){
+$value = explode("-", $event->getPlayer()->getUniqueId()->toString());
+var_dump($event->getPlayer()->getUniqueId()->toString());
+
+
+$array = array(8, 9, "a", "b");
+
+if($event->getPlayer()->getPing() < 5 || $event->getPlayer()->getUniqueId()->getVersion() !== 3 || !in_array(substr($value[3], -4, 1), $array)){
+$event->getPlayer()->close("", "поше наху бот");
+}
+}
 	public function shearSheep(DataPacketReceiveEvent $event) : bool
     {
+ 
         $packet = $event->getPacket();
         $player = $event->getPlayer();
-
         if ($packet instanceof InteractPacket) {
             if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 if ($player->getItemInHand()->getId() != 359) return false;

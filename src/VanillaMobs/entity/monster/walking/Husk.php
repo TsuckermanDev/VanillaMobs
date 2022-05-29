@@ -16,7 +16,7 @@ class Husk extends WalkingMonster{
 	const NETWORK_ID = 47;
 
     public $width = 1;
-    public $height = 1;
+    public $height = 2;
 	public $dropExp = [1, 3];
 	protected $attackDelay = 0;
 
@@ -34,7 +34,9 @@ class Husk extends WalkingMonster{
 	  $this->setMaxHealth(24);
 	  $this->setHealth(24);
   }
-
+public function getSpeed(){
+return $this->isBaby() ? 0.3 : 0.1;
+}
   public function isBaby() : bool{
 	  return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
   }
@@ -76,43 +78,50 @@ class Husk extends WalkingMonster{
 
 		$hasUpdate = parent::entityBaseTick(1, $EnchantL);
 		if($this->attackDelay > 10){
-			$ev = new EntityDamageByEntityEvent($this, $this->isnear, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 3);
-			$this->isnear->attack($ev->getFinalDamage(), $ev);
-			$this->isnear->addEffect(Effect::getEffect(Effect::HUNGER)->setDuration(30 * 20));
+			$ev = new EntityDamageByEntityEvent($this, $this->nearby, EntityDamageEvent::CAUSE_ENTITY_ATTACK, 3);
+			$this->nearby->attack($ev->getFinalDamage(), $ev);
+			$this->nearby->addEffect(Effect::getEffect(Effect::HUNGER)->setDuration(30 * 20));
 			$this->attackDelay = 0;
 		}
 		return $hasUpdate;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function processMove() : void
-	{
-		parent::processMove();
-		$isTarget = false;
-		$entities2 = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 1, $this->y - 1, $this->z - 1, $this->x + 1, $this->y + 1, $this->z + 1));
-		$entities = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 8, $this->y - 8, $this->z - 8, $this->x + 8, $this->y + 8, $this->z + 8));
-		for ($i = 0; $i < sizeof($entities); $i++) {
-			if ($entities[$i] instanceof Player && $entities[$i]->isSurvival()) {
-				$this->target = $entities[$i];
-				$isTarget = true;
-				$this->isnear = null;
-			}
-		}
-		for ($i = 0; $i < sizeof($entities2); $i++) {
-			if ($entities2[$i] instanceof Player && $entities2[$i]->isSurvival()) {
-				$this->attackDelay++;
-				$this->isnear = $entities2[$i];
-				$isTarget = true;
-			}
-		}
-		if (!$isTarget && $this->target instanceof Player) {
-			$this->target = null;
-			$this->isnear = null;
-		}
-		$this->defaultMove();
-	}
+	  public function processMove(){
+parent::processMove();
+
+    $isTarget = false;
+    $entities2 = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 1, $this->y - 1, $this->z - 1, $this->x + 1, $this->y + 1, $this->z + 1));
+    $entities = $this->getLevel()->getNearbyEntities(new AxisAlignedBB($this->x - 8, $this->y - 8, $this->z - 8, $this->x + 8, $this->y + 8, $this->z + 8));
+    foreach($entities as $entity){
+      if($entity instanceof Player){
+       if($entity->isSurvival()){
+       $this->setRandomPosition(null);
+       $this->setNearPlayer(null);
+       $this->setTarget($entity);
+       $isTarget = true;
+
+        }
+      }
+    }
+     foreach($entities2 as $entity2){
+      if($entity2 instanceof Player){
+       if($entity2->isSurvival()){
+       $this->attackDelay += 1;
+       $this->setRandomPosition(null);
+       $this->setTarget(null);
+       $this->setNearPlayer($entity2);
+       $isTarget = true;
+        }
+      }
+    }
+    if($isTarget === false){
+      if($this->target instanceof Player || $this->nearby instanceof Player){
+        $this->setTarget(null);
+        $this->setNearPlayer(null);
+      }
+    }
+    $this->defaultMove();
+  }
 
 	/**
 	 * @return array|Item[]

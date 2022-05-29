@@ -33,14 +33,16 @@ public function __construct(Level $level, CompoundTag $nbt){
     public function initEntity(){
         parent::initEntity();
 
-        if(mt_rand(1, 4) == 1){
+        if(mt_rand(1, 10) == 1){
                 $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY, true);
             $this->setScale(0.5);
         }
         $this->setMaxHealth(8);
         $this->setHealth(8);
     }
-
+public function getSpeed(){
+return $this->isAgitation() ? $this->speed * 2 : $this->speed;
+}
   public function isBaby() : bool{
     return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
   }
@@ -78,18 +80,11 @@ public function setColor(int $color){
 	}
 
 public function getDrops(){
-    if($this->isOnFire()){
-   $drops = [
-			Item::get(Item::WOOL, $this->getColor(), 1),
-     Item::get(Item::COOKED_MUTTON, 0, 1)
+     if($this->isBaby()) return [];
+		return [
+			Item::get(Item::WOOL, $this->getColor(), $this->isSheared() ? 0 : mt_rand(0, 2)),
+     Item::get($this->isOnFire() ? Item::COOKED_MUTTON : Item::RAW_MUTTON, 0, mt_rand(1, 2))
 		];
-   }else{
-		$drops = [
-			Item::get(Item::WOOL, $this->getColor(), 1),
-     Item::get(Item::RAW_MUTTON, 0, 1)
-		];
-   }
-		return $drops;
 }
 
   public function getName(){
@@ -122,7 +117,8 @@ parent::processMove();
     foreach($entities as $entity){
       if($entity instanceof Player){
         if($entity->getInventory()->getItemInHand()->getId() === 296){
-          $this->target = $entity;
+          $this->setRandomPosition(null);
+          $this->setTarget($entity);
           $isTarget = true;
           break;
         }
@@ -130,7 +126,7 @@ parent::processMove();
     }
     if($isTarget === false){
       if($this->target instanceof Player){
-        $this->target = null;
+        $this->setTarget(null);
       }
     }
 

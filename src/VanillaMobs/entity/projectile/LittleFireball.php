@@ -61,7 +61,7 @@ $ev->setBlockBreaking(false);
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();
-		$pk->type = BlazeFireball::NETWORK_ID;
+		$pk->type = LittleFireball::NETWORK_ID;
 		$pk->x = $this->x;
 		$pk->y = $this->y;
 		$pk->z = $this->z;
