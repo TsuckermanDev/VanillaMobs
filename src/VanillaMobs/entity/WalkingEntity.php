@@ -271,10 +271,7 @@ $this->getLevel()->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(),
     
      if($source->getEntity() instanceof $this){//извините по другому кнокбек не работает блять(( если ты знаешь как сделать по другому напиши мне в вк пж
    $this->damager = $damager;
-if(!$source->getEntity()->isInsideOfWater()){
   $this->knockback = 2;
-
-  }
 }
 
       if($damager instanceof Player){
